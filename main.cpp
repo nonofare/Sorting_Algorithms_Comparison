@@ -37,7 +37,7 @@ std::string PrintArray(T *array, size_t n, size_t limit = 0, std::string (*cmp_s
     }
 
     std::string text = "Array:\n";
-    text += "size: " + std::to_string(int(n)) + "\n";
+    text += "size: " + std::to_string(static_cast<int>(n)) + "\n";
     text += "{\n";
     if (cmp_string) {
         for (int i = 0; i < limit; i++) {
@@ -90,7 +90,7 @@ void TestForInts(const int MAX_ORDER, const int m, std::default_random_engine &d
         std::cout << "==========================================================" << std::endl;
         std::cout << "Test: " << i << std::endl << std::endl;
 
-        int n = (int) pow(10, i);
+        int n = static_cast<int>(pow(10, i));
 
         int *array1 = new int[n];
         int *array2 = new int[n];
@@ -113,8 +113,8 @@ void TestForInts(const int MAX_ORDER, const int m, std::default_random_engine &d
         std::cout << "Counting " << PrintArray(array1, n, 8) << std::endl;
 
 
+        auto *sbh = new SAC::SortingBinHeap<int>(array2, n, true);
         start_time = std::chrono::high_resolution_clock::now();
-        SAC::SortingBinHeap<int> *sbh = new SAC::SortingBinHeap<int>(array2, n, true);
         sbh->Sort();
         end_time = std::chrono::high_resolution_clock::now();
 
@@ -150,20 +150,20 @@ void TestForInts(const int MAX_ORDER, const int m, std::default_random_engine &d
 }
 
 void TestForObjects(const int MAX_ORDER, const int m, std::default_random_engine &dre) {
-    constexpr int LETTES_SIZE = 36;
-    constexpr char LETTERS[LETTES_SIZE] = {
+    constexpr int LETTERS_SIZE = 36;
+    constexpr char LETTERS[LETTERS_SIZE] = {
         'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V',
         'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
     };
 
     std::uniform_int_distribution<int> rnd_num(0, m);
-    std::uniform_int_distribution<int> rnd_let(0, LETTES_SIZE - 1);
+    std::uniform_int_distribution<int> rnd_let(0, LETTERS_SIZE - 1);
 
     for (int i = 1; i <= MAX_ORDER; i++) {
         std::cout << "==========================================================" << std::endl;
         std::cout << "Test: " << i << std::endl << std::endl;
 
-        int n = (int) pow(10, i);
+        int n = static_cast<int>(pow(10, i));
 
         some_object **array1 = new some_object *[n];
         some_object **array2 = new some_object *[n];
@@ -179,9 +179,8 @@ void TestForObjects(const int MAX_ORDER, const int m, std::default_random_engine
         std::cout << "Initial " << PrintArray(array1, n, 8, so_fun_str) << std::endl;
 
 
+        auto *sbh = new SAC::SortingBinHeap<some_object *>(array1, n, true, so_cmp_lgreater);
         std::chrono::high_resolution_clock::time_point start_time = std::chrono::high_resolution_clock::now();
-        SAC::SortingBinHeap<some_object *> *sbh = new SAC::SortingBinHeap<some_object *>(
-            array1, n, true, so_cmp_lgreater);
         sbh->Sort(so_cmp_lgreater);
         std::chrono::high_resolution_clock::time_point end_time = std::chrono::high_resolution_clock::now();
 
@@ -210,8 +209,8 @@ void TestForObjects(const int MAX_ORDER, const int m, std::default_random_engine
                 std::endl;
         std::cout << "-----------------------------" << std::endl << std::endl;
 
-        for (size_t i = 0; i < n; i++) {
-            delete array1[i];
+        for (size_t j = 0; j < n; j++) {
+            delete array1[j];
         }
         delete[] array1;
         delete[] array2;
@@ -225,8 +224,8 @@ int main() {
     static std::random_device rd;
     static std::default_random_engine dre(rd());
 
-    TestForInts(MAX_ORDER, m, dre);
-    //TestForObjects(MAX_ORDER, m, dre);
+    //TestForInts(MAX_ORDER, m, dre);
+    TestForObjects(MAX_ORDER, m, dre);
 
     return 0;
 }

@@ -11,6 +11,7 @@ namespace SAC {
             n) {
             this->arr = arr;
             this->size = n;
+            this->capacity = n + 1;
 
             if (top_down) {
                 for (size_t i = this->NodeParentIndex(n - 1); i != -1; i--) {
@@ -24,11 +25,13 @@ namespace SAC {
         }
 
         void Sort(bool (*cmp_lgreater)(T, T) = nullptr) {
+            size_t temp_size = this->Size();
             for (size_t i = this->size - 1; i > 0; i--) {
                 this->Swap(0, i);
                 this->size--;
                 this->HeapifyDown(0, cmp_lgreater);
             }
+            this->size = temp_size;
         }
     };
 
@@ -86,7 +89,7 @@ namespace SAC {
         auto *buckets = new std::vector<int>[n];
 
         for (size_t i = 0; i < n; i++) {
-            size_t bucket_index = (arr[i] * n) / (m + 1);
+            size_t bucket_index = (arr[i] * n) / m;
             buckets[bucket_index].push_back(arr[i]);
         }
 
