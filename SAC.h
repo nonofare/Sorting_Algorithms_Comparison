@@ -1,7 +1,7 @@
 #ifndef SAC_H
 #define SAC_H
 #include "BH.h"
-#include <vector>
+#include "DLL.h"
 
 namespace SAC {
     template<typename T>
@@ -58,46 +58,19 @@ namespace SAC {
         delete[] out_arr;
     }
 
-    template<typename T>
-    void InsertionSort(std::vector<T> &arr, bool (*cmp_lgreater)(T, T) = nullptr) {
-        if (cmp_lgreater) {
-            for (size_t i = 1; i < arr.size(); i++) {
-                T key = arr[i];
-                int j = i - 1;
-                while (j >= 0 && cmp_lgreater(arr[j], key)) {
-                    arr[j + 1] = arr[j];
-                    j--;
-                }
-                arr[j + 1] = key;
-            }
-        } else if constexpr (std::is_arithmetic_v<T>) {
-            for (size_t i = 1; i < arr.size(); i++) {
-                T key = arr[i];
-                int j = i - 1;
-                while (j >= 0 && arr[j] > key) {
-                    arr[j + 1] = arr[j];
-                    j--;
-                }
-                arr[j + 1] = key;
-            }
-        } else {
-            throw std::runtime_error("SAC::InsertionSort(): T was not arithmetic and no cmp was provided");
-        }
-    }
-
     void BucketSort(int *arr, size_t n, int m) {
-        auto *buckets = new std::vector<int>[n];
+        auto *buckets = new DLL::DoubLinList<int>[n];
 
         for (size_t i = 0; i < n; i++) {
             size_t bucket_index = (arr[i] * n) / m;
-            buckets[bucket_index].push_back(arr[i]);
+            buckets[bucket_index].PushBack(arr[i]);
         }
 
         size_t index = 0;
         for (size_t i = 0; i < n; i++) {
-            if (!buckets[i].empty()) {
-                InsertionSort(buckets[i]);
-                for (size_t j = 0; j < buckets[i].size(); j++) {
+            if (!buckets[i].Empty()) {
+                buckets[i].InsertionSort();
+                for (size_t j = 0; j < buckets[i].Size(); j++) {
                     arr[index++] = buckets[i][j];
                 }
             }
@@ -108,18 +81,18 @@ namespace SAC {
 
     template<typename T>
     void BucketSort(T *arr, size_t n, int m, bool (*cmp_lgreater)(T, T), size_t (*fun_key)(T, size_t)) {
-        auto *buckets = new std::vector<T>[n];
+        auto *buckets = new DLL::DoubLinList<T>[n];
 
         for (size_t i = 0; i < n; i++) {
             size_t bucket_index = fun_key(arr[i], n);
-            buckets[bucket_index].push_back(arr[i]);
+            buckets[bucket_index].PushBack(arr[i]);
         }
 
         size_t index = 0;
         for (size_t i = 0; i < n; i++) {
-            if (!buckets[i].empty()) {
-                InsertionSort(buckets[i], cmp_lgreater);
-                for (size_t j = 0; j < buckets[i].size(); j++) {
+            if (!buckets[i].Empty()) {
+                buckets[i].InsertionSort(cmp_lgreater);
+                for (size_t j = 0; j < buckets[i].Size(); j++) {
                     arr[index++] = buckets[i][j];
                 }
             }

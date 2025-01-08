@@ -224,8 +224,8 @@ int main() {
     static std::random_device rd;
     static std::default_random_engine dre(rd());
 
-    //TestForInts(MAX_ORDER, m, dre);
-    TestForObjects(MAX_ORDER, m, dre);
+    TestForInts(MAX_ORDER, m, dre);
+    //TestForObjects(MAX_ORDER, m, dre);
 
     return 0;
 }
